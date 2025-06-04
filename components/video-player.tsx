@@ -7,19 +7,25 @@ export default function VideoPlayerClient({ id }: { id: string }) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    import("plyr").then((module) => {
-      const Plyr = module.default;
-      new Plyr(ref.current!, {
-        controls: [
-          "play",
-          "progress",
-          "current-time",
-          "mute",
-          "volume",
-          "fullscreen",
-        ],
+    const isIOS =
+      typeof window !== "undefined" &&
+      /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    if (!isIOS) {
+      import("plyr").then((module) => {
+        const Plyr = module.default;
+        new Plyr(ref.current!, {
+          controls: [
+            "play",
+            "progress",
+            "current-time",
+            "mute",
+            "volume",
+            "fullscreen",
+          ],
+        });
       });
-    });
+    }
   }, []);
 
   return (
