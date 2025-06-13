@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { getVideoById } from "@/utils/db";
+import { auth } from "@/app/(auth)/auth";
 
 export async function GET(
   req: NextRequest,
@@ -10,11 +11,14 @@ export async function GET(
     return new Response("Missing or invalid ID", { status: 400 });
   }
 
+  const session = await auth();
+  if (!session?.user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const video = await getVideoById(Number(id));
-  if (!video || !video.url || !video.bunkrId) {
-    return new Response("Video not found or not a Bunkr video", {
-      status: 404,
-    });
+  if (!video || video.userId !== Number(session.user.id)) {
+    return new Response("Forbidden", { status: 403 });
   }
 
   const range = req.headers.get("range");

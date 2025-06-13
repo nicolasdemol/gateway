@@ -116,9 +116,12 @@ export async function getVideos({
   });
 }
 
-export async function getVideoById(id: number) {
-  return prisma.video.findUnique({
-    where: { id },
+export async function getVideoById(id: number, userId?: number) {
+  return prisma.video.findFirst({
+    where: {
+      id,
+      ...(userId && { userId }),
+    },
   });
 }
 

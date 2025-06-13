@@ -1,3 +1,4 @@
+import { auth } from "@/app/(auth)/auth";
 import { AppHeader } from "@/components/app-header";
 import EncryptedVideoPlayer from "@/components/encrypted-video-player";
 import { VideoDeleteButton } from "@/components/video-delete-button";
@@ -11,11 +12,21 @@ export default async function VideoPage({
 }) {
   const { id } = await params;
 
+  const session = await auth();
+  if (!session?.user?.id) {
+    return <div className="p-6 text-center">Non autorisé</div>;
+  }
+
   if (!id || isNaN(Number(id))) {
     return <div className="p-6 text-center">ID de vidéo invalide</div>;
   }
 
-  const video = await getVideoById(Number(id));
+  const video = await getVideoById(Number(id), Number(session.user.id));
+  if (!video) {
+    return (
+      <div className="p-6 text-center">Vidéo introuvable ou accès interdit</div>
+    );
+  }
 
   if (!video) {
     return <div className="p-6 text-center">Vidéo introuvable</div>;

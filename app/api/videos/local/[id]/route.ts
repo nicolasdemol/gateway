@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import fs from "fs";
 import path from "path";
 import { getVideoById } from "@/utils/db";
+import { auth } from "@/app/(auth)/auth";
 
 export async function GET(
   req: NextRequest,
@@ -9,13 +10,17 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  const video = await getVideoById(Number(id));
+  const session = await auth();
+  if (!session?.user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
-  const filePath = path.join(
-    process.cwd(),
-    "public",
-    video?.url ?? ""
-  );
+  const video = await getVideoById(Number(id));
+  if (!video || video.userId !== Number(session.user.id)) {
+    return new Response("Forbidden", { status: 403 });
+  }
+
+  const filePath = path.join(process.cwd(), "public", video?.url ?? "");
   if (!fs.existsSync(filePath))
     return new Response("Not found", { status: 404 });
 
