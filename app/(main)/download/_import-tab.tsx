@@ -78,7 +78,8 @@ export default function ImportTab() {
 
       setFile(null);
       setPassword("");
-    } catch {
+    } catch (err) {
+      console.error("[IMPORT ERROR]", err);
       toast({ type: "error", description: "Erreur pendant l'import" });
     } finally {
       setUploading(false);

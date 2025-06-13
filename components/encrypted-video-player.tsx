@@ -34,11 +34,11 @@ export default function EncryptedVideoPlayer({ src }: { src: string }) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-40rem)] w-full px-4">
+    <div className="flex items-center justify-center w-full px-4">
       {videoUrl ? (
         <VideoPlayer src={videoUrl} />
       ) : (
-        <div className="w-full max-w-md grid gap-4 text-center">
+        <div className="w-full pt-12 max-w-md grid gap-4 text-center">
           <div className="flex items-center justify-center gap-2">
             <Lock className="size-5" />
             <h2 className="text-lg font-semibold">
