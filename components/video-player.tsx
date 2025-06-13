@@ -3,7 +3,25 @@
 import { useEffect, useRef } from "react";
 import "plyr/dist/plyr.css";
 
-export default function VideoPlayerClient({ id }: { id: string }) {
+interface VideoPlayerProps {
+  src: string;
+  poster?: string;
+  type?: string;
+  autoplay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  className?: string;
+}
+
+export default function VideoPlayer({
+  src,
+  poster,
+  type = "video/mp4",
+  autoplay = false,
+  muted = false,
+  loop = false,
+  className = "",
+}: VideoPlayerProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -11,9 +29,8 @@ export default function VideoPlayerClient({ id }: { id: string }) {
       typeof window !== "undefined" &&
       /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-    if (!isIOS) {
-      import("plyr").then((module) => {
-        const Plyr = module.default;
+    if (!isIOS && ref.current) {
+      import("plyr").then(({ default: Plyr }) => {
         new Plyr(ref.current!, {
           controls: [
             "play",
@@ -26,18 +43,27 @@ export default function VideoPlayerClient({ id }: { id: string }) {
         });
       });
     }
-  }, []);
+  }, [src]);
+
+  if (!src) return <p className="text-red-500">Aucune source vidéo fournie.</p>;
 
   return (
-    <div className="relative w-full max-w-3xl rounded-xl overflow-hidden shadow-lg border">
+    <div
+      className={`relative w-full h-full max-w-xl rounded-xl overflow-hidden shadow-lg border ${className}`}
+    >
       <video
         ref={ref}
         className="w-full h-full"
         playsInline
         controls
         preload="metadata"
+        poster={poster}
+        autoPlay={autoplay}
+        muted={muted}
+        loop={loop}
       >
-        <source src={`/api/video/${id}`} type="video/mp4" />
+        <source src={src} type={type} />
+        Votre navigateur ne supporte pas la lecture vidéo.
       </video>
     </div>
   );

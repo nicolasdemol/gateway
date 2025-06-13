@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import fs from "fs";
 import path from "path";
+import { getVideoById } from "@/utils/db";
 
 export async function GET(
   req: NextRequest,
@@ -8,7 +9,13 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  const filePath = path.join(process.cwd(), "public", "videos", id);
+  const video = await getVideoById(Number(id));
+
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    video?.url ?? ""
+  );
   if (!fs.existsSync(filePath))
     return new Response("Not found", { status: 404 });
 

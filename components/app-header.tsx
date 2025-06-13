@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import React from "react";
+import Link from "next/link";
 
 interface BreadcrumbItem {
   label: string;
@@ -18,19 +19,23 @@ interface BreadcrumbItem {
 interface AppHeaderProps {
   breadcrumbs?: BreadcrumbItem[];
   showSidebarTrigger?: boolean;
+  actionsSlot?: React.ReactNode;
   className?: string;
 }
 
 export function AppHeader({
   breadcrumbs = [],
   showSidebarTrigger = true,
+  actionsSlot,
   className = "",
 }: AppHeaderProps) {
   const hasBreadcrumbs = breadcrumbs.length > 0;
 
   return (
-    <header className={`flex h-16 shrink-0 items-center gap-2 ${className}`}>
-      <div className="flex items-center gap-2 px-4">
+    <header
+      className={`flex h-16 shrink-0 items-center justify-between px-4 gap-2 ${className}`}
+    >
+      <div className="flex items-center gap-2 overflow-hidden">
         {showSidebarTrigger && <SidebarTrigger className="-ml-1" />}
         {showSidebarTrigger && hasBreadcrumbs && (
           <Separator
@@ -46,11 +51,18 @@ export function AppHeader({
                 <React.Fragment key={i}>
                   <BreadcrumbItem>
                     {item.href ? (
-                      <BreadcrumbLink href={item.href}>
-                        {item.label}
+                      <BreadcrumbLink asChild>
+                        <Link href={item.href}>{item.label}</Link>
                       </BreadcrumbLink>
                     ) : (
-                      <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      <BreadcrumbPage>
+                        <span
+                          className="max-w-[200px] truncate inline-block align-bottom"
+                          title={item.label}
+                        >
+                          {item.label}
+                        </span>
+                      </BreadcrumbPage>
                     )}
                   </BreadcrumbItem>
                   {i < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
@@ -60,6 +72,10 @@ export function AppHeader({
           </Breadcrumb>
         )}
       </div>
+
+      {actionsSlot && (
+        <div className="flex items-center gap-2">{actionsSlot}</div>
+      )}
     </header>
   );
 }
