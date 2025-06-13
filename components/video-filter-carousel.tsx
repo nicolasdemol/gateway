@@ -6,9 +6,9 @@ import clsx from "clsx";
 const FILTERS = [
   { label: "Toutes", value: "all" },
   { label: "Bunkr", value: "bunkr" },
-  { label: "Locales", value: "local" },
-  { label: "Chiffrées", value: "encrypted" },
   { label: "Web", value: "direct" },
+  { label: "Chiffrées", value: "encrypted" },
+  { label: "Locales", value: "local" },
 ];
 
 export function VideoFilterCarousel({

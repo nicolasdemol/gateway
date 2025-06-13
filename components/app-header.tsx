@@ -57,7 +57,7 @@ export function AppHeader({
                     ) : (
                       <BreadcrumbPage>
                         <span
-                          className="max-w-[200px] truncate inline-block align-bottom"
+                          className="max-w-[150px] truncate inline-block align-bottom"
                           title={item.label}
                         >
                           {item.label}

@@ -7,22 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/toast";
 import { useRouter } from "next/navigation";
-
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-
-import VideoPlayer from "@/components/video-player";
 import { decryptBunkrUrl } from "@/utils/encryption";
+
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export default function RegisterTab() {
   const router = useRouter();
-  const [source, setSource] = useState("direct"); // "direct" ou "bunkr"
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [source, setSource] = useState<"direct" | "bunkr">("bunkr");
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
@@ -34,7 +25,7 @@ export default function RegisterTab() {
       let bunkrId = undefined;
 
       if (source === "bunkr") {
-        const slug = url.trim().split("/").pop(); // extrait le slug
+        const slug = url.trim().split("/").pop();
         const res = await fetch("/api/bunkr/resolve", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -51,7 +42,6 @@ export default function RegisterTab() {
 
         finalUrl = decryptBunkrUrl(data.url, data.timestamp);
         bunkrId = slug;
-        setPreviewUrl(`/api/videos/bunkr/${data.id}`);
       }
 
       const saveRes = await fetch("/api/videos/register", {
@@ -67,8 +57,8 @@ export default function RegisterTab() {
       if (!saveRes.ok) throw new Error();
 
       const newVideo = await saveRes.json();
-
       toast({ type: "success", description: "Vidéo enregistrée avec succès" });
+
       setUrl("");
       setTitle("");
       router.push(`/video/${newVideo.id}`);
@@ -90,25 +80,25 @@ export default function RegisterTab() {
       />
 
       <Label htmlFor="url">URL</Label>
-      <div className="flex items-center space-x-2">
-        <Input
-          id="url"
-          placeholder="https://ex.com/video.mp4"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <Select value={source} onValueChange={setSource}>
-          <SelectTrigger className="w-32" id="source">
-            <SelectValue placeholder="Choisir une source" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="direct">Direct</SelectItem>
-            <SelectItem value="bunkr">Bunkr</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {previewUrl && <VideoPlayer src={previewUrl} />}
+      <ToggleGroup
+        type="single"
+        value={source}
+        onValueChange={(val) => val && setSource(val as "direct" | "bunkr")}
+        className="flex gap-2 w-full"
+      >
+        <ToggleGroupItem value="bunkr" aria-label="Source Bunkr">
+          Bunkr
+        </ToggleGroupItem>
+        <ToggleGroupItem value="direct" aria-label="Source directe">
+          Direct
+        </ToggleGroupItem>
+      </ToggleGroup>
+      <Input
+        id="url"
+        placeholder="https://ex.com/video.mp4"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+      />
 
       <Button
         className="w-full"
