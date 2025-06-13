@@ -23,8 +23,7 @@
 
 # prisma
 /prisma/migrations
-/prisma/dev.db
-*.db
+/prisma/dev.*
 
 # misc
 .DS_Store
