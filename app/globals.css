@@ -3,13 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.plyr--video {
-  border-radius: 12px;
-  overflow: hidden;
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-.plyr__controls {
-  background: rgba(0, 0, 0, 0.5);
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 :root {

@@ -12,18 +12,16 @@ export default async function VideoPage({
   const { id } = await params;
 
   if (!id || isNaN(Number(id))) {
-    return (
-      <div className="p-6 text-center">ID de vidéo invalide</div>
-    );
+    return <div className="p-6 text-center">ID de vidéo invalide</div>;
   }
 
   const video = await getVideoById(Number(id));
 
   if (!video) {
-    return (
-      <div className="p-6 text-center">Vidéo introuvable</div>
-    );
+    return <div className="p-6 text-center">Vidéo introuvable</div>;
   }
+
+  const isBunkr = !!video.bunkrId;
 
   const videoSrc =
     video.source === "LOCAL" ? `/api/videos/local/${video.id}` : video.url;
@@ -37,9 +35,11 @@ export default async function VideoPage({
         ]}
         actionsSlot={<VideoDeleteButton id={video.id} />}
       />
-      <div className="p-6 flex flex-col items-center">
+      <div className="mt-4 px-6 flex flex-col items-center">
         {video.encrypted ? (
           <EncryptedVideoPlayer src={videoSrc} />
+        ) : isBunkr ? (
+          <VideoPlayer src={`/api/videos/bunkr/${video.id}`} />
         ) : (
           <VideoPlayer src={videoSrc} />
         )}

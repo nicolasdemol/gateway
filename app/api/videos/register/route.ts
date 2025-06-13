@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createVideo } from "@/utils/db";
-import { auth } from "@/app/(auth)/auth"; // ou méthode perso si tu gères l'user différemment
+import { auth } from "@/app/(auth)/auth";
 
 export async function POST(req: Request) {
   try {
@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { url, title } = await req.json();
+    const { url, title, bunkrId } = await req.json();
 
     if (!url || !title) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -20,6 +20,8 @@ export async function POST(req: Request) {
       url,
       userId: Number(session.user.id),
       source: "REMOTE",
+      bunkrId,
+      encrypted: false,
     });
 
     return NextResponse.json(video, { status: 201 });

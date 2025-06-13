@@ -68,3 +68,15 @@ export async function decryptVideo(
 
   return new Blob([decrypted], { type: "video/mp4" });
 }
+
+export function decryptBunkrUrl(dataUrl: string, timestamp: number): string {
+  const key = `SECRET_KEY_${Math.floor(timestamp / 3600)}`;
+  const raw = atob(dataUrl);
+  const keyBytes = new TextEncoder().encode(key);
+  const decrypted = Array.from(raw).map((char, i) => {
+    return String.fromCharCode(
+      char.charCodeAt(0) ^ keyBytes[i % keyBytes.length]
+    );
+  });
+  return decrypted.join("");
+}

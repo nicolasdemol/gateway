@@ -46,12 +46,14 @@ export async function createUser(email: string, password: string) {
 export async function createVideo({
   title,
   url,
+  bunkrId,
   userId,
   source,
   encrypted = false,
 }: {
   title: string;
   url: string;
+  bunkrId?: string;
   userId: number;
   source: "LOCAL" | "REMOTE";
   encrypted?: boolean; // optionnel : par défaut false
@@ -60,6 +62,7 @@ export async function createVideo({
     data: {
       title,
       url,
+      bunkrId,
       userId,
       source,
       encrypted,

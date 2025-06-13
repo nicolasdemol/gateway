@@ -34,7 +34,7 @@ export default function EncryptedVideoPlayer({ src }: { src: string }) {
   };
 
   return (
-    <div className="flex items-center justify-center w-full px-4">
+    <div className="flex items-center justify-center w-full">
       {videoUrl ? (
         <VideoPlayer src={videoUrl} />
       ) : (
