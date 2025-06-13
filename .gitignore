@@ -21,6 +21,11 @@
 /build
 /public/videos
 
+# prisma
+/prisma/migrations
+/prisma/dev.db
+*.db
+
 # misc
 .DS_Store
 *.pem
@@ -41,4 +46,3 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/lib/generated/prisma
